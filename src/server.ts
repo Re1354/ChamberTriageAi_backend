@@ -37,6 +37,11 @@ await app.register(cors, {
 });
 
 app.setErrorHandler(errorHandler);
+// API-র উত্তর কোনো CDN/প্রক্সি (Vercel) বা ব্রাউজার যেন ক্যাশ না করে
+app.addHook("onSend", async (_req, reply, payload) => {
+  if (!reply.hasHeader("cache-control")) reply.header("cache-control", "no-store");
+  return payload;
+});
 await app.register(systemRoutes);
 await app.register(publicRoutes);
 await app.register(doctorRoutes);
