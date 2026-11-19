@@ -1,0 +1,50 @@
+# Render Blueprint — New → Blueprint → এই রিপো। (অথবা New → Web Service-এ নিচের Build/Start কমান্ড হাতে দিন)
+services:
+  - type: web
+    name: chamberai-api
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: (npm ci --include=dev || npm install --include=dev) && npm run build
+    startCommand: node --enable-source-maps dist/server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_POOL_MAX
+        value: "5"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: STORAGE_BUCKET
+        value: visit-media
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MOCK_LLM
+        value: "false"
+      - key: MODEL_TURN
+        value: gemini-3.1-flash-lite
+      - key: MODEL_FINAL
+        value: gemini-3.5-flash-lite
+      - key: DAILY_RPD_TURN
+        value: "500"
+      - key: DAILY_RPD_FINAL
+        value: "500"
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: RUN_WORKER
+        value: "true"
+      - key: CHECKPOINTER
+        value: postgres
+      - key: CRON_SECRET
+        generateValue: true
+      - key: IP_HASH_SALT
+        generateValue: true
