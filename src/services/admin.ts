@@ -44,8 +44,8 @@ export async function createDoctor(actorId: string, body: CreateDoctorBody): Pro
 
   try {
     await q(
-      `insert into public.doctors (id, email, full_name, specialty, chamber_name, chamber_address, slug, daily_ai_limit)
-       values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      `insert into public.doctors (id, email, full_name, specialty, chamber_name, chamber_address, slug, daily_ai_limit, qualifications)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
         data.user.id,
         body.email.toLowerCase(),
@@ -55,6 +55,7 @@ export async function createDoctor(actorId: string, body: CreateDoctorBody): Pro
         body.chamberAddress || null,
         body.slug,
         body.dailyAiLimit ?? 80,
+        body.qualifications || null,
       ],
     );
   } catch (err) {
@@ -86,6 +87,7 @@ export async function updateDoctor(actorId: string, doctorId: string, body: Upda
        specialty = coalesce($5, specialty),
        chamber_name = coalesce($6, chamber_name),
        chamber_address = coalesce($7, chamber_address),
+       qualifications = coalesce($8, qualifications),
        is_open = case when $2 = false then false else is_open end
      where id = $1`,
     [
@@ -96,6 +98,7 @@ export async function updateDoctor(actorId: string, doctorId: string, body: Upda
       body.specialty ?? null,
       body.chamberName ?? null,
       body.chamberAddress ?? null,
+      body.qualifications ?? null,
     ],
   );
   // নিষ্ক্রিয় করলে লগইনও বন্ধ

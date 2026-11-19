@@ -47,8 +47,9 @@ const doctors = [
     password: pw(),
     fullName: "ডা. আব্দুর রহমান (ডেমো)",
     specialty: "মেডিসিন বিশেষজ্ঞ",
+    qualifications: "MBBS (ঢাকা মেডিকেল কলেজ), FCPS (মেডিসিন)",
     chamberName: "রহমান মেডিকেল চেম্বার",
-    chamberAddress: "ধানমন্ডি, ঢাকা",
+    chamberAddress: "বাড়ি ১২, রোড ২৭, ধানমন্ডি, ঢাকা",
     slug: "dr-rahman",
   },
   {
@@ -56,8 +57,9 @@ const doctors = [
     password: pw(),
     fullName: "ডা. ফারহানা করিম (ডেমো)",
     specialty: "হৃদরোগ বিশেষজ্ঞ",
+    qualifications: "MBBS (স্যার সলিমুল্লাহ মেডিকেল কলেজ), MD (কার্ডিওলজি), বাংলাদেশ মেডিকেল বিশ্ববিদ্যালয়",
     chamberName: "করিম হার্ট কেয়ার",
-    chamberAddress: "মিরপুর, ঢাকা",
+    chamberAddress: "সেকশন ১০, মিরপুর, ঢাকা",
     slug: "dr-karim",
   },
 ];
@@ -69,12 +71,13 @@ console.log(`✅ admin: ${admin.email}`);
 for (const d of doctors) {
   const id = await ensureUser(d.email, d.password, "doctor");
   await q(
-    `insert into public.doctors (id, email, full_name, specialty, chamber_name, chamber_address, slug, is_open, must_change_password)
-     values ($1, $2, $3, $4, $5, $6, $7, true, false)
+    `insert into public.doctors (id, email, full_name, specialty, chamber_name, chamber_address, slug, is_open, must_change_password, qualifications)
+     values ($1, $2, $3, $4, $5, $6, $7, true, false, $8)
      on conflict (id) do update set full_name = excluded.full_name, specialty = excluded.specialty,
+       qualifications = excluded.qualifications,
        chamber_name = excluded.chamber_name, chamber_address = excluded.chamber_address,
        slug = excluded.slug, is_open = true, is_active = true, must_change_password = false`,
-    [id, d.email, d.fullName, d.specialty, d.chamberName, d.chamberAddress, d.slug],
+    [id, d.email, d.fullName, d.specialty, d.chamberName, d.chamberAddress, d.slug, d.qualifications],
   );
   console.log(`✅ doctor: ${d.email}  →  /d/${d.slug}`);
 }

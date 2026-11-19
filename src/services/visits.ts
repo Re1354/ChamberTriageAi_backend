@@ -163,6 +163,7 @@ export async function getDoctorPublic(slug: string): Promise<DoctorPublic> {
   return {
     fullName: d.full_name,
     specialty: d.specialty,
+    qualifications: d.qualifications ?? null,
     chamberName: d.chamber_name,
     chamberAddress: d.chamber_address,
     isOpen: d.is_open,

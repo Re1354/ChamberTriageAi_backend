@@ -9,6 +9,7 @@ import {
   type VisitDetail,
   type VisitListItem,
   type VisitUpload,
+  type UpdateOwnProfileBody,
 } from "@chamberai/shared";
 import type { DoctorRow } from "../auth";
 import { env } from "../config";
@@ -247,6 +248,16 @@ export async function ackAlert(doctor: DoctorRow, alertId: string): Promise<void
 export async function setChamberOpen(doctor: DoctorRow, isOpen: boolean): Promise<void> {
   await q("update public.doctors set is_open = $2 where id = $1", [doctor.id, isOpen]);
   await audit(doctor.id, isOpen ? "chamber_open" : "chamber_close", null);
+}
+
+/** ডাক্তার নিজের প্রোফাইল (বিশেষজ্ঞতা, ডিগ্রি, চেম্বার) বদলান — নাম ও লিংক শুধু অ্যাডমিন বদলান */
+export async function updateOwnProfile(doctor: DoctorRow, body: UpdateOwnProfileBody): Promise<void> {
+  const clean = (s: string) => s.trim() || null;
+  await q(
+    `update public.doctors set specialty = $2, qualifications = $3, chamber_name = $4, chamber_address = $5 where id = $1`,
+    [doctor.id, clean(body.specialty), clean(body.qualifications), clean(body.chamberName), clean(body.chamberAddress)],
+  );
+  await audit(doctor.id, "profile_updated", null);
 }
 
 export async function markPasswordChanged(doctor: DoctorRow): Promise<void> {

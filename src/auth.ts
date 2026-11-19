@@ -18,6 +18,7 @@ export interface DoctorRow {
   email: string;
   full_name: string;
   specialty: string | null;
+  qualifications: string | null;
   chamber_name: string | null;
   chamber_address: string | null;
   slug: string;
@@ -91,6 +92,7 @@ export function toDoctorProfile(d: DoctorRow): DoctorProfile {
     email: d.email,
     fullName: d.full_name,
     specialty: d.specialty,
+    qualifications: d.qualifications ?? null,
     chamberName: d.chamber_name,
     chamberAddress: d.chamber_address,
     slug: d.slug,

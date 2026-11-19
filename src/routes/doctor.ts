@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { ChamberToggleBodySchema, type MeResponse } from "@chamberai/shared";
+import { ChamberToggleBodySchema, UpdateOwnProfileBodySchema, type MeResponse } from "@chamberai/shared";
 import { isAdmin, requireDoctor, requireUser, toDoctorProfile, type DoctorRow } from "../auth";
 import { q1 } from "../db";
 import { uuidParam } from "../lib/request";
@@ -12,6 +12,7 @@ import {
   markSeen,
   searchByCode,
   setChamberOpen,
+  updateOwnProfile,
 } from "../services/doctor";
 
 /**
@@ -38,6 +39,11 @@ export async function doctorRoutes(app: FastifyInstance) {
 
     scoped.post("/api/doctor/me/password-changed", async (req) => {
       await markPasswordChanged(req.doctor!);
+      return { ok: true };
+    });
+
+    scoped.patch("/api/doctor/me/profile", async (req) => {
+      await updateOwnProfile(req.doctor!, UpdateOwnProfileBodySchema.parse(req.body));
       return { ok: true };
     });
 
